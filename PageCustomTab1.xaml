@@ -1,0 +1,48 @@
+﻿<Page x:Class="PPNC_Router_Addin.PageCustomTab1"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  Title="Router" Style="{DynamicResource CncPage}">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="SkyBlue.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Viewbox>
+        <Grid Height="640" Width="620">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Name="ttbCustom" Text="Router Panel" Style="{DynamicResource CncTextBlock}" FontSize="24" FontWeight="Bold" Margin="0,10,0,5" HorizontalAlignment="Center" />
+            <TextBlock Name="ttbVersion" Text="_Addin v0.40" Style="{DynamicResource CncTextBlock}" FontSize="12" FontWeight="Bold" Margin="0,10,0,5" HorizontalAlignment="Left" />
+
+
+
+            <Grid Name="Axis2Status" Grid.Row="1" Margin="0,100,0,400">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Name="tbToolCurrent" Text="Current Tool In Spindle :" Style="{DynamicResource CncTextBlock}" Margin="10,10,0,10" HorizontalAlignment="Left" FontSize="22" Height="32" Width="335" />
+                <TextBox x:Name="tbEditTool" Text="0" Width="40" FontFamily="Consolas" FontSize="22" HorizontalAlignment="Left" VerticalAlignment="Center"
+                	Foreground="{DynamicResource TextBrush}" Background="{DynamicResource BackgroundBrush2}" BorderBrush="{DynamicResource TextBrush}" Margin="440,0,0,0" />
+                <TextBlock Name="tbToolEditText" Text="Edit Tool" Style="{DynamicResource CncTextBlock}" Margin="500,10,0,10" VerticalAlignment="Center" FontSize="18"
+                           />
+            </Grid>
+
+            <StackPanel Grid.Row="1" Margin="0,0,0,-33.2">
+                <TextBlock Name="tbToolNext" Text="Next Tool (Active Tcode): " Style="{DynamicResource CncTextBlock}" Margin="10,200,0,10" HorizontalAlignment="Left" FontSize="22" Height="23" Width="600" />
+            </StackPanel>
+            
+            <TextBlock Name="ttbBottom" Grid.Row="1" Text="(Bottom Edge)" VerticalAlignment="Bottom" HorizontalAlignment="Center" 
+                Style="{DynamicResource CncTextBlock}" Margin="2" FontStyle="Italic" FontSize="12" />
+        </Grid>
+    </Viewbox>
+</Page>

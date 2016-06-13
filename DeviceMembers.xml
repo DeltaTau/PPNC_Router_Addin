@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- ******** DeviceMembers.xml for the "PowerPmacNC" application ********  -->
+<!-- This file is read by MCF at startup and must be in the exe directory.  -->
+<!-- This file will NOT be overwritten by MCF and should be well commented. -->
+<!--                                                                        -->
+<!-- Include a section for each FDevice class that will use this feature.   -->
+<!-- The device's "DeviceMembersXml" object flag must be set.               -->
+<!-- Members may be listed in any order.                                    -->
+<!-- Specify Getter, Setter and TimeBetweenUpdates by member full name.     -->
+<!-- If no Setter is specified then a setter of the form "Getter={0}" will  -->
+<!-- be generated.  An empty string "" results in a null Setter or Getter.  -->
+<!-- Setter="" (null Setter) results in a read-only device member.          -->
+<!-- Setter and Getter cannot both be empty strings.                        -->
+<!-- TimeBetweenUpdates is optional with a default value of zero msec.      -->
+<!-- TimeBetweenUpdates="0" means that the controller will not be queried.  -->
+<!-- (For variables that will only be set by the app, not the controller.)  -->
+<!--                                                                        -->
+<!-- PMAC Variable Assignments:                                             -->
+<!-- P800-P899  Reserved for use by external assemblies                     -->
+
+<DeviceMembers>
+  <PowerPmacController>
+    <!-- This section specifies the Power PMAC variables used by the PowerPmacNC application. -->
+    <!--Member Name="GCodes.CustomGGroup" Getter="P802" TimeBetweenUpdates="500" /-->
+    <!--Member Name="MCodes.CustomMGroup" Getter="P803" TimeBetweenUpdates="500" /-->
+    <Member Name="FkeyHandler.SystemKey" Getter="P801" TimeBetweenUpdates="500" />
+    <Member Name="MCodes.OutfileLoggingGroup" Getter="P802" TimeBetweenUpdates="500" />
+    <Member Name="MCodes.HoldDownsGroup" Getter="P803" TimeBetweenUpdates="500" />
+    <Member Name="MCodes.LocatorPinsGroup" Getter="P804" TimeBetweenUpdates="500" />
+
+    <Member Name="CustomObject.PowerPendantEnabled" Getter="P820" />
+    <Member Name="CustomObject.ToolNumberInSpindle" Getter="P821" />
+    <Member Name="CustomObject.XaxisParkPosition" Getter="P822" />
+    <Member Name="CustomObject.YaxisParkPosition" Getter="P823" />
+    <Member Name="CustomObject.ZaxisParkPosition" Getter="P824" />
+    <Member Name="CustomObject.XaxisParkSpeed" Getter="P825" />
+    <Member Name="CustomObject.YaxisParkSpeed" Getter="P826" />
+    <Member Name="CustomObject.ZaxisParkSpeed" Getter="P827" />
+    <Member Name="CustomObject.XAwayPos" Getter="P828" />
+    <Member Name="CustomObject.SheetZeroOffset" Getter="P829" />
+    <Member Name="CustomObject.SheetLength" Getter="P830" />
+    <Member Name="CustomObject.Roller1MinPos" Getter="P831" />
+    <Member Name="CustomObject.Roller1MaxPos" Getter="P832" />
+    <Member Name="CustomObject.Roller2MinPos" Getter="P833" />
+    <Member Name="CustomObject.Roller2MaxPos" Getter="P834" />
+    <Member Name="CustomObject.Roller3MinPos" Getter="P835" />
+    <Member Name="CustomObject.Roller3MaxPos" Getter="P836" />
+    <Member Name="CustomObject.Roller4MinPos" Getter="P837" />
+    <Member Name="CustomObject.Roller4MaxPos" Getter="P838" />
+
+
+
+
+  </PowerPmacController>
+  <TurboPmacController>
+    <!-- This section specifies the Turbo PMAC variables used by the PowerPmacNC application. -->
+  </TurboPmacController>
+  <MockController>
+    <!-- This section specifies the Mock Controller variables used by the PowerPmacNC application. -->
+    <!-- Note that all TimeBetweenUpdates are zero.  None of these members will be updated.        -->
+    <!--Member Name="GCodes.CustomGGroup" Getter="P888" TimeBetweenUpdates="500" /-->
+    <!--Member Name="MCodes.CustomMGroup" Getter="P888" TimeBetweenUpdates="500" /-->
+    <Member Name="FkeyHandler.SystemKey" Getter="P801" TimeBetweenUpdates="500" />
+    <Member Name="MCodes.OutfileLoggingGroup" Getter="P802" TimeBetweenUpdates="500" />
+    <Member Name="MCodes.HoldDownsGroup" Getter="P803" TimeBetweenUpdates="500" />
+    <Member Name="MCodes.LocatorPinsGroup" Getter="P804" TimeBetweenUpdates="500" />
+
+    <Member Name="CustomObject.PowerPendantEnabled" Getter="P820" />
+    <Member Name="CustomObject.ToolNumberInSpindle" Getter="P821" />
+    <Member Name="CustomObject.XaxisParkPosition" Getter="P822" />
+    <Member Name="CustomObject.YaxisParkPosition" Getter="P823" />
+    <Member Name="CustomObject.ZaxisParkPosition" Getter="P824" />
+    <Member Name="CustomObject.XaxisParkSpeed" Getter="P825" />
+    <Member Name="CustomObject.YaxisParkSpeed" Getter="P826" />
+    <Member Name="CustomObject.ZaxisParkSpeed" Getter="P827" />
+    <Member Name="CustomObject.XAwayPos" Getter="P828" />
+    <Member Name="CustomObject.SheetZeroOffset" Getter="P829" />
+    <Member Name="CustomObject.SheetLength" Getter="P830" />
+    <Member Name="CustomObject.Roller1MinPos" Getter="P831" />
+    <Member Name="CustomObject.Roller1MaxPos" Getter="P832" />
+    <Member Name="CustomObject.Roller2MinPos" Getter="P833" />
+    <Member Name="CustomObject.Roller2MaxPos" Getter="P834" />
+    <Member Name="CustomObject.Roller3MinPos" Getter="P835" />
+    <Member Name="CustomObject.Roller3MaxPos" Getter="P836" />
+    <Member Name="CustomObject.Roller4MinPos" Getter="P837" />
+    <Member Name="CustomObject.Roller4MaxPos" Getter="P838" />
+
+
+  </MockController>
+</DeviceMembers>

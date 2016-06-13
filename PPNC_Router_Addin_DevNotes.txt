@@ -1,0 +1,238 @@
+﻿PPNC_Router_Addin_DevNotes.txt
+02/28/15
+
+*** How this works:
+	-when NC14 HMI starts if INI has in section [External Assemblies] instructions
+	to load this addin it will
+	-need to create a sub-dir (NOT PUT FILES in SAME DIR AS HMI) for these files
+	-only files needed in the sub-dir (\PPNC_Router_Addin) are "DeviceMembers.xml"  and  "PPNC_Router_Addin.dll"
+		-may also have the PPNC_Router_Addin.pdb here if debugging but for release not used
+
+*** 6/12/16  Dev notes to create a new Add-In version from latest PowerNC build
+
+	- get latest NC16 build from git repo
+		- change Build - Configuration mgr - top lines in dialog should be [Debug]  [x86]
+			- not need to change project items in list box just top line in dialog
+
+		- open and edit to remove the .M41 reference which conflicts with Router Add-in
+			-resolve conflict with new HMI version, it is using M41 and so is Router Addin
+				-it is using .M41 for "Gear Range M-code group"
+				-edit the PowerPmacNC project file "MCodes.cs" to comment out "public enum EGearRangeGroup" section and
+					comment out ref to .M41 in "public MCodes(FObject Owner, FDevice Controller)" functions
+
+	- now rebuild and should have new files in \debug
+				\PowerPmacNC\bin\Debug\MCFoundation.dll
+				\PowerPmacNC\bin\Debug\PowerPmacNC.exe
+		-copy these to Add-In dir (overwrite existing)
+			C:\VS_2013\PPNC_Router_Addin\PPNC_Router_Addin\References
+
+	- now copy new set of Master files for NC16 to your test dir
+		- this is the base set of NC16 HMI files to run new version, we will now put in Add-In files
+		C:\4_PowerNC-Demo\PPNC16_HMI_Router
+
+	- open the Add-In project in VS
+		- change the version number
+			-update version number in:
+			PageCustomTab1.xaml.cs file       ttbVersion.Text = "PPNC_Router_Addin v0.30";
+				- NOT need to edit this: upper left text box in "PageCustomTab1.xaml"
+
+	- edit the version.txt file with new details and version numbers
+
+	- delete in References the MCFoundation and PowerPmacNC items
+	- now Add the References back in from new files copied to C:\VS_2013\PPNC_Router_Addin\PPNC_Router_Addin\References
+		-not sure if this is needed since same file names used ?  I think not ?
+
+	- now rebuild the Add-In project
+
+	- now copy files from \debug to C:\4_PowerNC-Demo\PPNC16_HMI_Router\PPNC_Router_Addin
+		- this is sub-dir under NC16 dir for distribution
+		- files to copy over: DeviceMembers.xml, PPNC_Router_Addin.dll, PPNC_Router_Addin.pdb
+		- add version.txt file to this directory as well
+
+	- edit the PowerPmacNC.ini file in the working dir so it includes the new Add-In
+		- see PowerPmacNC.ini.mike for example of ini file with this added
+		- add below lines to section after 
+			[External Assemblies]
+			.... existing code
+			.... new code at end of this section to add
+
+			; Router_Addin Running on Target
+			CustomTab="PPNC_Router_Addin\PPNC_Router_Addin.dll;PPNC_Router_Addin.PageCustomTab1"
+			Object="PPNC_Router_Addin\PPNC_Router_Addin.dll;PPNC_Router_Addin.CustomObject"
+			CodeGroups="PPNC_Router_Addin\PPNC_Router_Addin.dll;PPNC_Router_Addin.CustomCodeGroups"
+
+			[Router_Addin]
+			;example path = "C:\Outfile\"
+			OutfilePath="C:\Outfile\"
+			OutfileName="Outfile.csv"
+			MachineName="DDS-Router"
+			;typical delimiter either comma: ","  space: " "
+			OutfileDelimiter=","
+			AvgFeedrateEnable="1"
+			AvgOverideEnable="1"
+
+	-Now you should run the PowerPmacNC.exe from working dir
+		- note the Router tab on Main page, chk version number
+		- note the CNC Router section in Machine view
+
+
+		-NOTE when updating Production Dir be careful to keep existing settings files for this machine !
+			PowerPmacNC.ini				-custom setup to run HMI on this machine
+			Messages.xml				-custom messages used by this application
+			PowerPmacNC_Settings.xml	-here are machine settings setup in machine view, also stuff like work offsets
+
+
+*********** End Dev Notes, now new version is ready to deploy **********
+
+
+*** INI File Setup for NC
+-add ref to external add-in project for HMI to load on startup
+-below for Runtime we point to it's local dir for copy of add-in dll
+-but for DEV so can work with ongoing changes and compiled code we point to the
+	working dir of the add-in project, so it will load last compiled version of Add-in
+	-for this the source does not need the \Add-in\ dir located under it's debug dir
+
+**** WORKING in SOURCE for Project Dev ****
+[External Assemblies]
+....
+;Router_Addin Running on Dev System:
+CustomTab="..\..\..\..\PPNC_Router_Addin\PPNC_Router_Addin\bin\Debug\PPNC_Router_Addin.dll;PPNC_Router_Addin.PageCustomTab1"
+;CenterCustomFrame="..\..\..\..\PPNC_Router_Addin\PPNC_Router_Addin\bin\Debug\PPNC_Router_Addin.dll;PPNC_Router_Addin.PageCustom"
+Object="..\..\..\..\PPNC_Router_Addin\PPNC_Router_Addin\bin\Debug\PPNC_Router_Addin.dll;PPNC_Router_Addin.CustomObject"
+CodeGroups="..\..\..\..\PPNC_Router_Addin\PPNC_Router_Addin\bin\Debug\PPNC_Router_Addin.dll;PPNC_Router_Addin.CustomCodeGroups"
+
+**** ADD this to RUNTIME Project ini ****
+; Router_Addin Running on Target
+CustomTab="PPNC_Router_Addin\PPNC_Router_Addin.dll;PPNC_Router_Addin.PageCustomTab1"
+Object="PPNC_Router_Addin\PPNC_Router_Addin.dll;PPNC_Router_Addin.CustomObject"
+CodeGroups="PPNC_Router_Addin\PPNC_Router_Addin.dll;PPNC_Router_Addin.CustomCodeGroups"
+
+
+*** INI settings for Router Addin application
+sevaral INI settings are used to allow user to field modify some settings
+-such as parameters related to the Outfile processing
+-these are all in the Main NC14 INI file "PowerPmacNC.ini"
+-these are all in section of that INI [Router_Addin]
+-here is typical example of section to add to the INI file for this
+	[Router_Addin]
+	;example path = "C:\Outfile\"
+	OutfilePath="C:\Outfile\"
+	OutfileName="Outfile.csv"
+	MachineName="DDS-Router"
+	;typical delimiter either comma: ","  space: " "
+	OutfileDelimiter=","
+	AvgFeedrateEnable="1"
+	AvgOverideEnable="1"
+
+
+*************** PAST NOTES on Development *******************
+*** DEV Notes:
+	-the Addin must have References to:
+		-these are found in the latest build of the NC14 HMI
+			MCFoundation
+			PowerPmacNC
+
+		-here is HOW I do it... several ways possible
+			-I build with latest NC14, then copy from NC14 project to PPNC_Router_Addin Project.. Addin\References dir:
+				\PowerPmacNC\References\MCFoundation.dll
+				\PowerPmacNC\bin\Debug\PowerPmacNC.exe
+					-I rename the PowerPmacNC.exe to denote the actual Git Version it is
+					so e.g.  PowerPmacNC.exe is renamed to PowerPmacNC-e2eaf23.exe   (Git version e2eaf23 of NC14 HMI)
+		-Now in Addin project add a reference to each of these files under References
+				-now you should see in References:   MCFoundation  AND   PowerPMACNC-e2eaf23
+				-now project will build without any errors
+		-NOTE about the References:
+			-if major changes are made to MCF or the NC14 HMI you may need to get new versions of these files
+			and update the references to these
+
+
+	-how to work with Project in a DEBUG fashion for development:
+		-Open current working NC14 HMI Internal or SDK that you are doing Dev with
+
+		-In this Solution you want to ADD the  PPNC_Router_Addin Project to the Solution List
+			-Rt-Clk Solution - Add - Existing Project - go to your Addin project dir and select the "PPNC_Router_Addin.csproj" file
+			-now the Addin project should be in the Solution along with the NC14 HMI
+
+		-Now in the NC14 HMI Debug dir (where it will run from when debugging) edit the INI file so it loads the External Assemblies for 
+			your Addin project - see the INI setup below for details
+			-add the ref to external add-in to load on startup
+			-optionally add the other INI settings for router add-in to work with them as well
+				-these are simply a new section added to ini [Router_Addin]
+
+		-Now when NC14 is Run from VS in Debug it will ALSO run your Addin and you can debug BOTH while testing
+			-as you make changes to Addin logic, rebuild and run NC14 to see/debug it 
+
+		-NOTE when updating Production Dir be careful to keep existing settings files for this machine !
+			PowerPmacNC.ini				-custom setup to run HMI on this machine
+			Messages.xml				-custom messages used by this application
+			PowerPmacNC_Settings.xml	-here are machine settings setup in machine view, also stuff like work offsets
+
+
+
+	*** What I Do to create a new Version:
+		-Got new PPNC version from Git (92c5db3)
+		-Started VS for this Project:
+			-Deleted the "..Router-Addin.." from the Solution
+			-Rebuild All
+			-Add "PPNC_Router_Addin" to  solution
+		-Now in Addin Project:
+			-modidfy the version to 0.20 
+				-see ttbVersion.Text in PageCustomTab1.xaml.cs
+				-note this is not the xaml file ...
+				    ttbVersion.Text = "PPNC_Router_Addin v0.30";
+			-update the References:
+				-working in "C:\VS_2013\PPNC_Router_Addin\PPNC_Router_Addin\References"
+				-be sure have backup of last working ref files
+				-copy from PPNC14 \bin\Debug needed ref files 
+					-copy from "C:\VS_2013\PowerPmacNc14-Internal-051915-92c5db3\PowerPmacNC\bin\Debug"
+					-MCFoundation.dll
+					-PowerPmacNC.exe
+			-rename PowerPmacNC.exe  TO  PowerPmacNC-92c5db3.exe
+			-goto Addin project References list
+				-remove old PowerPmacNC-xxx.exe
+				-add new PowerPmacNC-92c5db3.exe to ref list
+		-Now Rebuild whole Solution
+			-it will create new files for PPNC in  "C:\VS_2013\PowerPmacNc14-Internal-051915-92c5db3\PowerPmacNC\bin\Debug"
+			-it will create new files for Addin in "C:\VS_2013\PPNC_Router_Addin\PPNC_Router_Addin\bin\Debug"
+
+		-Update the Version txt file that will go with addin files
+
+		-Be sure to include fix for mystery message if using a new version of HMI code, this is in by default had has to be done 
+			each time you work with updated version of the HMI code
+				- you have to get this message out of the Internal version and make sure all out of Add_In
+				-fix for "mystery message" popping up when Axes Display mode changed
+			e.g.  "Axes Display has been changed from Relative Position to Machine Position"
+			-this is fixed by commenting out lines in function "AxesDisplay_ChangedAsString()" in
+			Project CustomExamples - CustomObject.cs file
+			-it is to demo how main HMI can link and make calls to custom projects in this case when the
+				Axes display changes this gets called
+			-we here comment out to prevent this message from coming up in our production HMI on router
+
+		-resolve conflict with new HMI version, it is using M41 and so is Router Addin
+			-it is using .M41 for "Gear Range M-code group"
+			-edit the PowerPmacNC project file "MCodes.cs" to comment out "public enum EGearRangeGroup" section and
+				comment out ref to .M41 in "public MCodes(FObject Owner, FDevice Controller)" functions
+
+
+
+		-Now to create new version for production PC:
+			-copy files from PPNC HMI \bin\debug to production dir for application
+			-copy files from Addin \bin\debug to production dir "...\PPNC_Router_Addin\"
+				-files to copy:
+					DeviceMembers.xml
+					PPNC_Router_Addin.dll
+					PPNC_Router_Addin.pdb
+					PPNC_Router_Addin_Version.txt
+
+				-DO NOT Copy to runtime dir. these not needed:
+					MCFoundatin.dll
+					PowerPmacNC-xxxxxxx.exe
+
+		-Now can run new version from Production Dir
+
+		-NOTE when updating Production Dir be careful to keep existing settings files for this machine !
+			PowerPmacNC.ini				-custom setup to run HMI on this machine
+			Messages.xml				-custom messages used by this application
+			PowerPmacNC_Settings.xml	-here are machine settings setup in machine view, also stuff like work offsets
+
+

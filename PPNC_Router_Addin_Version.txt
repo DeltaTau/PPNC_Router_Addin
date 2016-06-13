@@ -1,0 +1,89 @@
+﻿PPNC_Router_Addin_Version.txt
+02/28/15
+-Tracking changes to project for Router NC14 Addin
+
+-update version number in:
+     PageCustomTab1.xaml.cs file       ttbVersion.Text = "PPNC_Router_Addin v0.30";
+		 NOT need to edit this: upper left text box in "PageCustomTab1.xaml"
+
+
+
+**** VERSIONS ****
+
+-061216 v0.50
+	-released with NC HMI v1.1d 5/2/16 MCF v1.9.5979 (5/15/2016)
+	-reference .exe version is from Internal Git v7d06454  06/06/16 (newer than v1.1d)
+	-updated for ChrisA to use on Sting Ray router
+
+-030416 v0.41
+	-released with NC HMI v1.1a 2/26/16 MCF v1.8.5899
+	-reference .exe version is from Internal Git v55407b8
+	-fix to get rid of 2nd pop up "Axis Display has been changed... " messsage that comes up when changing display modes
+		- this is in 2 places in base NC16 code in "CustomExamples"
+		- see ...DevNotes.txt for details
+	-had to comment out the AxesDisplay_ChangedAsString from more places in the CustomObject.cs in the Addin solution as well
+
+-030116 v0.40
+	-released with NC HMI v1.1a 2/26/16 MCF v1.8.5899
+	-reference .exe version is from Internal Git v55407b8
+	-update for Sting Ray project, working with Chris A.
+	- ChrisA updated the Power PMAC code, this is just to update to current release version of NC16
+
+
+-070915 v0.30
+	-released with NC HMI v0.9p (6/11/15)  Internal-bba2336   MCF 1.7.5655
+	-changes for Sting Ray to get new features and changes made to HMI
+	-Rapid display changes
+
+	-fix for "mystery message" popping up when Axes Display mode changed
+	e.g.  "Axes Display has been changed from Relative Position to Machine Position"
+		-this is fixed by commenting out lines in function "AxesDisplay_ChangedAsString()" in
+		Project CustomExamples - CustomObject.cs file  &   PageCustom.xaml
+		-it is to demo how main HMI can link and make calls to custom projects in this case when the
+			Axes display changes this gets called
+		-we here comment out to prevent this message from coming up in our production HMI on router
+		-It is in 2 PLACES to Comment OUT !
+
+		File PageCustom.xaml
+		private void AxesDisplay_ChangedAsString(FMember member, MemberChangedEventArgs<string> e)
+        {
+            //tbAxesDisplay.Text = e.NewValue;
+        }
+
+		CustomObject.cs
+		private void AxesDisplay_ChangedAsString(FMember member, MemberChangedEventArgs<string> e)
+        {
+            //if (e.NewValue != e.OldValue)
+            //    g.Report(this, EReportType.InformationAlarm, "Axes Display has been changed from {0} to {1}.", e.OldValue, e.NewValue);
+        }
+
+	-resolve conflict with new HMI version, it is using M41 and so is Router Addin
+		-it is using .M41 for "Gear Range M-code group"
+		-edit the PowerPmacNC project file "MCodes.cs" to comment out "public enum EGearRangeGroup" section and
+			comment out ref to .M41 in "public MCodes(FObject Owner, FDevice Controller)" functions
+
+-060415 v0.20
+	-released with NC HMI v0.9m (5/19/15)  Internal-92c5db3
+	-did not make any functional changes to panel or logic just updated for new HMI
+	-had to make some changes to work with updated MCF
+
+		-changed version number
+		-changed CustomCodeGroups.cs  for change in MCF  was .CncSupport, Now .CNC
+			//using MCF.CncSupport;
+			using MCF.CNC;
+		-removed the ISkinnable from PageCustom.xaml.cs  (another change in MCF ?)
+			Was:     public partial class PageCustom : Page, ISkinnable
+			Now:     public partial class PageCustom : Page
+
+
+
+-030215 v0.10
+	-released with NC HMI v0.9f 2/22/15   Internal-e2eaf23
+	-first release version to machine for production
+	-created Router Panel and works as a new tab
+
+
+-02/28/15
+	-added machine parameters for Router
+	-added Mcode groups for router
+	-added Outfile logging support for Router
